@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Opportunity {
+  id           String     @id @default(uuid())
+  title        String
+  department   String
+  status       String
+  dueDate      DateTime
+  value        String
+  contractType String
+  description  String
+  naicsCode    String
+  attachments  String[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  proposals    Proposal[]
+  awards       Award[]
+}
+
+model Subcontractor {
+  id             String   @id @default(uuid())
+  name           String
+  type           String
+  email          String   @unique
+  phone          String
+  certifications String[]
+  pastProjects   Int      @default(0)
+  rating         Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Proposal {
+  id               String      @id @default(uuid())
+  opportunity      Opportunity @relation(fields: [opportunityId], references: [id])
+  opportunityId    String
+  status          String
+  executiveSummary String
+  technicalApproach String
+  pastPerformance  String[]
+  documents        String[]
+  dueDate         DateTime
+  questionsDeadline DateTime
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Award {
+  id            String      @id @default(uuid())
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  opportunityId String
+  status        String
+  submissionDate DateTime
+  value         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
